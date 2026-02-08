@@ -7,6 +7,7 @@ import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -20,5 +21,11 @@ class PatientApiServiceImpl implements PatientApiService {
     public Long savePatient(PatientSaveRequestDto dto) {
         Patient patient = dto.toEntity();
         return patientDomainService.savePatient(patient).getId();
+    }
+
+    @Override
+    public Boolean saveImage(String patientId, MultipartFile image) {
+        patientDomainService.saveImage(Long.parseLong(patientId), image);
+        return true;
     }
 }

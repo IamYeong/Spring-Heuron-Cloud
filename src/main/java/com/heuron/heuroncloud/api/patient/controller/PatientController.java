@@ -48,7 +48,7 @@ public class PatientController {
             .buildAndMapToResponseEntity();
     }
 
-    @Operation(summary = "환자 이미지 저장", description = "환자정보 저장 후 저장결과를 반환합니다")
+    @Operation(summary = "환자 이미지 저장", description = "환자 이미지 저장 후 저장결과를 반환합니다")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "저장 성공",
             content = @Content(schema = @Schema(implementation = Boolean.class)))
@@ -57,10 +57,14 @@ public class PatientController {
         consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> transmitResultReportToPacs(
         @PathVariable(value = "patientId") String patientId,
-        @RequestParam(value = "image") MultipartFile report
-    ) throws BusinessException, IOException {
-        Boolean responseDto = true;
-        return ResponseEntity.ok(responseDto);
-    }
+        @RequestParam(value = "image") MultipartFile image
+    ) throws BusinessException {
+        Boolean responseDto = patientApiService.saveImage(patientId, image);
+
+        return HttpResponseBody.builder()
+            .code(HttpStatus.CREATED)
+            .message(HttpStatus.CREATED.toString())
+            .response(responseDto)
+            .buildAndMapToResponseEntity();    }
 
 }
