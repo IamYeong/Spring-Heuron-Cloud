@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PatientDomainServiceImpl implements PatientDomainService {
+class PatientDomainServiceImpl implements PatientDomainService {
 
     private final PatientRepository patientRepository;
 

@@ -32,8 +32,6 @@ public class Patient {
 
     private boolean hasDisease;
 
-    private String imageUrl;
-
     @CreatedDate
     protected LocalDateTime createdDate;
 
