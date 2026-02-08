@@ -1,5 +1,8 @@
 package com.heuron.heuroncloud.api.patient.dto;
 
+import com.heuron.heuroncloud.domain.common.dto.DateParsable;
+import com.heuron.heuroncloud.domain.patient.entity.Gender;
+import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -8,11 +11,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Locale;
+
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientSaveRequestDto {
+public class PatientSaveRequestDto extends DateParsable {
 
     @NotNull
     @NotEmpty
@@ -26,5 +31,22 @@ public class PatientSaveRequestDto {
 
     @NotNull
     private Boolean hasDisease;
+
+    public Patient toEntity() {
+        return Patient.builder()
+            .name(name)
+            .birthday(parseDate(birthday))
+            .gender(parseGender(gender))
+            .hasDisease(hasDisease)
+            .build();
+    }
+
+    private Gender parseGender(String gender) {
+        if (gender.toUpperCase(Locale.ROOT).equals("M")) {
+            return Gender.Male;
+        }
+
+        return Gender.Female;
+    }
 
 }
