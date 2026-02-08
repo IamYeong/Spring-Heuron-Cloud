@@ -6,7 +6,7 @@ on:
       - '.github/workflows/**'
       - 'src/**'
       - 'build.gradle'
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
   build:
