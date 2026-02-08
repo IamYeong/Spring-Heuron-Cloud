@@ -5,6 +5,7 @@ import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.repository.PatientRepository;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +23,8 @@ class PatientDomainServiceImpl implements PatientDomainService {
     }
 
     @Override
-    public Patient getPatient(Long id) throws BusinessException {
+    public Patient getPatient(Long id) {
         return patientRepository.findById(id)
-            .orElseThrow(BusinessException::new);
+            .orElseThrow(() -> new BusinessException(HttpStatus.NO_CONTENT.value(), HttpStatus.NO_CONTENT.name()));
     }
 }

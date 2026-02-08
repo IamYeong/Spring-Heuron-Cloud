@@ -3,12 +3,15 @@ package com.heuron.heuroncloud.api.patient.controller;
 import com.heuron.heuroncloud.api.common.dto.HttpResponseBody;
 import com.heuron.heuroncloud.api.patient.dto.PatientSaveRequestDto;
 import com.heuron.heuroncloud.api.patient.service.PatientApiService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,7 @@ public class PatientController {
     @PostMapping("/patients")
     public ResponseEntity<Object> save(
         @Valid @RequestBody PatientSaveRequestDto requestDto
-    ) {
+    ) throws BusinessException {
         Long responseDto = patientApiService.savePatient(requestDto);
 
         return HttpResponseBody.builder()
