@@ -2,6 +2,7 @@ package com.heuron.heuroncloud.api.patient.service.impl;
 
 import com.heuron.heuroncloud.api.patient.dto.PatientSaveRequestDto;
 import com.heuron.heuroncloud.api.patient.service.PatientApiService;
+import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ class PatientApiServiceImpl implements PatientApiService {
     @Override
     @Transactional
     public Long savePatient(PatientSaveRequestDto dto) {
-        return null;
+        Patient patient = dto.toEntity();
+        return patientDomainService.savePatient(patient).getId();
     }
 }
