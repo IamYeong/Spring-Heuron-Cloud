@@ -15,4 +15,7 @@ spring:
     url: ENC(U0zJs9HJD1IMbIKBvXoa2XPNkLOqY9n7mI+QgHwYisapmKq/kkUWaJIndizvuQns9iriAXYCCT3fnz+gHJ2uwkRFnUJRb2uMcjnZb2rP6b+NmEHIYcILdux8Dw/rg68LaIEgmQG1F019gJ0BeWySY44cfhAbJZzx70hsoBgAMuQM5HklQNyhjg==)
     username: ENC(jJ2FDDxkRzps4F68jat0nw==)
     password: ENC(6O62rlufyxGg1bJZBArcwf35zM37Wlvp)
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.
+
+image:
+  path: images
