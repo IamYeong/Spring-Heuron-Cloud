@@ -5,9 +5,6 @@ application:
 spring:
   profiles:
     group:
-      prod:
-        - prod
-        - common
       local:
         - local
         - common
