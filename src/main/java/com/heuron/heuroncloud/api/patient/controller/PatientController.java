@@ -15,8 +15,12 @@ import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -42,6 +46,21 @@ public class PatientController {
             .message(HttpStatus.CREATED.toString())
             .response(responseDto)
             .buildAndMapToResponseEntity();
+    }
+
+    @Operation(summary = "환자 이미지 저장", description = "환자정보 저장 후 저장결과를 반환합니다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "저장 성공",
+            content = @Content(schema = @Schema(implementation = Boolean.class)))
+    })
+    @PostMapping(value = "/patients/{patientId}/images",
+        consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Object> transmitResultReportToPacs(
+        @PathVariable(value = "patientId") String patientId,
+        @RequestParam(value = "image") MultipartFile report
+    ) throws BusinessException, IOException {
+        Boolean responseDto = true;
+        return ResponseEntity.ok(responseDto);
     }
 
 }
