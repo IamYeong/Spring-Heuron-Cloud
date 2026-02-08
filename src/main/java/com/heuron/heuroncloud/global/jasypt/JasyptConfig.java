@@ -1,4 +1,4 @@
-package com.heuron.heuroncloud.global;
+package com.heuron.heuroncloud.global.jasypt;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.jasypt.encryption.StringEncryptor;
