@@ -54,7 +54,7 @@ public class PatientController {
             content = @Content(schema = @Schema(implementation = Boolean.class)))
     })
     @PostMapping(value = "/patients/{patientId}/images",
-        consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> transmitResultReportToPacs(
         @PathVariable(value = "patientId") String patientId,
         @RequestParam(value = "image") MultipartFile image
@@ -65,6 +65,7 @@ public class PatientController {
             .code(HttpStatus.CREATED)
             .message(HttpStatus.CREATED.toString())
             .response(responseDto)
-            .buildAndMapToResponseEntity();    }
+            .buildAndMapToResponseEntity();
+    }
 
 }
