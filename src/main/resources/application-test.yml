@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+  datasource:
+    url: jdbc:h2:mem:test;DATABASE_TO_UPPER=false
+    username: ENC(yIjeHxdLQp+bhexHta5FAw==)
+    password: ENC(45NVwk13IrrShE/esmE2yiQDq7r4fbM+)
+    driver-class-name: org.h2.Driver
+
+  sql:
+    init:
+      mode: always
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

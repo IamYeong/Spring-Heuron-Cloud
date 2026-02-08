@@ -1,0 +1,13 @@
+application:
+  name: HeuronCloud
+  version: 0.0.1
+
+spring:
+  profiles:
+    group:
+      local:
+        - local
+        - common
+      test:
+        - test
+        - common
