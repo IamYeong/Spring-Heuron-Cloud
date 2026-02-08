@@ -6,14 +6,17 @@ import com.heuron.heuroncloud.domain.patient.repository.PatientJpaRepository;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PatientDomainServiceImpl implements PatientDomainService {
 
     private final PatientJpaRepository patientJpaRepository;
 
     @Override
+    @Transactional
     public Patient savePatient(Patient patient) {
         return patientJpaRepository.save(patient);
     }
