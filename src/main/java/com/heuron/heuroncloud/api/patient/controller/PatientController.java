@@ -26,7 +26,7 @@ public class PatientController {
     @Operation(summary = "환자정보 저장", description = "환자정보 저장 후 ID 를 반환합니다(client 편의목적)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "저장 성공",
-            content = @Content(schema = @Schema(implementation = PatientSaveRequestDto.class)))
+            content = @Content(schema = @Schema(implementation = Long.class)))
     })
     @PostMapping("/patients")
     public ResponseEntity<Object> save(
