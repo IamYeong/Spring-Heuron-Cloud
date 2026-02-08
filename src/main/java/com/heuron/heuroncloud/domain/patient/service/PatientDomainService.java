@@ -7,6 +7,6 @@ public interface PatientDomainService {
 
     Patient savePatient(Patient patient);
 
-    Patient getPatient(Long id) throws BusinessException;
+    Patient getPatient(Long id);
 
 }
