@@ -24,7 +24,7 @@ public class PatientController {
 
         return HttpResponseBody.builder()
             .code(HttpStatus.CREATED)
-            .message("Created")
+            .message(HttpStatus.CREATED.toString())
             .response(responseDto)
             .buildAndMapToResponseEntity();
     }
