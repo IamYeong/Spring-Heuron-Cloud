@@ -22,3 +22,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+image:
+  path: images
+  url: 127.0.0.1
