@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @SpringBootTest
 public class PatientDomainServiceTest {
@@ -26,6 +27,21 @@ public class PatientDomainServiceTest {
 
         // Assert
         Assertions.assertEquals(1L, postSavePatient.getId());
+    }
+
+    @Test
+    public void emptyImageNotSelectTest() throws Exception {
+        // Arrange
+        Patient patient = buildPatient();
+        patientDomainService.savePatient(patient);
+        patientDomainService.savePatient(patient);
+        patientDomainService.savePatient(patient);
+
+        // Action
+        List<Patient> patientList = patientDomainService.getPatients();
+
+        // Assert
+        Assertions.assertEquals(0, patientList.size());
     }
 
     private Patient buildPatient() {
