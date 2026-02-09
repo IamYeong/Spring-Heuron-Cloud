@@ -7,6 +7,7 @@ import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,11 +125,32 @@ class PatientDomainServiceImpl implements PatientDomainService {
 
     @Override
     public Resource getImage(Long patientId) {
-        checkExistsPatient(patientId);
-        LocalDate today = LocalDate.now();
+        //checkExistsPatient(patientId);
+        Patient patient = patientRepository.findById(patientId)
+            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST.value(), "Patient not found"));
 
+        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        return null;
+        Path imagePath = Paths.get(imageBasePath)
+            .resolve(Long.toString(patientId))
+            .resolve(today)
+            .resolve(patient.getImageId())
+            .normalize();
+
+        if (!Files.exists(imagePath)) {
+            throw new BusinessException(
+                HttpStatus.NOT_FOUND.value(), "Image file not found"
+            );
+        }
+
+        try {
+            return new UrlResource(imagePath.toUri());
+        } catch (IOException e) {
+            throw new BusinessException(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Failed to load image file"
+            );
+        }
     }
 
     private void checkExistsPatient(Long patientId) {
