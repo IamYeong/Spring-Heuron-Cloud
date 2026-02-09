@@ -25,9 +25,6 @@ class PatientApiServiceImpl implements PatientApiService {
 
     private final ImageDomainService imageDomainService;
 
-    @Value("${image.url}")
-    private String imageUrl;
-
     @Override
     @Transactional
     public Long savePatient(PatientSaveRequestDto dto) {
@@ -45,15 +42,13 @@ class PatientApiServiceImpl implements PatientApiService {
     private PatientResponseDto convertToDto(Patient patient) {
         String patientId = Long.toString(patient.getId());
 
-        String url = "http://" + imageUrl + "/api/patients/" + patientId + "/images";
-
         return PatientResponseDto.builder()
             .id(patientId)
             .name(patient.getName())
             .gender(patient.getGender().name())
             .hasDisease(patient.isHasDisease())
             .age(convertBirthdayToAge(patient.getBirthday()))
-            .imageUrl(url)
+            .imageUrl(imageDomainService.getUrl(patient))
             .build();
     }
 
