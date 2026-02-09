@@ -16,3 +16,6 @@ spring:
     username: ENC(jJ2FDDxkRzps4F68jat0nw==)
     password: ENC(6O62rlufyxGg1bJZBArcwf35zM37Wlvp)
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+image:
+  path: images
