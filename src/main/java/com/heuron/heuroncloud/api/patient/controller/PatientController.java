@@ -15,6 +15,7 @@ import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -74,17 +75,16 @@ public class PatientController {
         @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(schema = @Schema(implementation = Resource.class)))
     })
-    @GetMapping(value = "/patients/{patientId}/iamges")
-    public ResponseEntity<Object> getPatientImage(
+    @GetMapping(value = "/patients/{patientId}/images")
+    public ResponseEntity<Resource> getPatientImage(
         @PathVariable(value = "patientId") String patientId
     ) {
-        Resource image = null;
+        Resource image = patientApiService.getImage(patientId);
 
-        return HttpResponseBody.builder()
-            .code(HttpStatus.OK)
-            .message(HttpStatus.OK.toString())
-            .response(image)
-            .buildAndMapToResponseEntity();
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+            .body(image);
     }
 
 }

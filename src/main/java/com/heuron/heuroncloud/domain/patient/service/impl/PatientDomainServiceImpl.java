@@ -54,14 +54,16 @@ class PatientDomainServiceImpl implements PatientDomainService {
 
         Patient patient = patientRepository.findById(patientId)
             .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST.value(), "Patient not found"));
+
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        String extension = extractExtension(image.getOriginalFilename());
+        String extension = ".jpeg";
         validateImageExtension(extension);
         deleteExistingImageIfExists(patient);
-        String fileName = UUID.randomUUID() + extension;
+        String imageId = UUID.randomUUID().toString();
+        String fileName = imageId + extension;
 
-        patient.setImageId(fileName);
+        patient.setImageId(imageId);
 
         Path baseDir = Paths.get(imageBasePath).toAbsolutePath().normalize();
         Path targetPath = baseDir
@@ -110,13 +112,6 @@ class PatientDomainServiceImpl implements PatientDomainService {
         }
     }
 
-    private String extractExtension(String filename) {
-        if (filename == null || !filename.contains(".")) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Invalid file name");
-        }
-        return filename.substring(filename.lastIndexOf(".")).toLowerCase();
-    }
-
     private void validateImageExtension(String ext) {
         if (!List.of(".jpg", ".jpeg").contains(ext)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Unsupported image type");
@@ -124,18 +119,27 @@ class PatientDomainServiceImpl implements PatientDomainService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Resource getImage(Long patientId) {
-        //checkExistsPatient(patientId);
         Patient patient = patientRepository.findById(patientId)
             .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST.value(), "Patient not found"));
 
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
+        if (patient.getImageId() == null) {
+            throw new BusinessException(HttpStatus.NO_CONTENT.value(), "Empty Image");
+        }
+
         Path imagePath = Paths.get(imageBasePath)
             .resolve(Long.toString(patientId))
             .resolve(today)
-            .resolve(patient.getImageId())
+            .resolve(patient.getImageId().concat(".jpeg"))
             .normalize();
+
+        System.out.println(patient.getId());
+        System.out.println(today);
+        System.out.println(patient.getImageId());
+        System.out.println(imagePath.toString());
 
         if (!Files.exists(imagePath)) {
             throw new BusinessException(

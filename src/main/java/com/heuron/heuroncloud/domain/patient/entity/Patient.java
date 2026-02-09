@@ -41,7 +41,9 @@ public class Patient {
     protected LocalDateTime updatedDate;
 
     public void setImageId(String imageId) {
+        System.out.println(imageId);
         this.imageId = imageId;
+        System.out.println(this.imageId);
     }
 
 }
