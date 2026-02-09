@@ -17,7 +17,7 @@ public class PatientResponseDto {
 
     private String gender;
 
-    private String birthday;
+    private Integer age;
 
     private Boolean hasDisease;
 

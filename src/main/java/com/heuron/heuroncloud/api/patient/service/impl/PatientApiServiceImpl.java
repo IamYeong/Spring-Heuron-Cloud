@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -51,9 +52,16 @@ class PatientApiServiceImpl implements PatientApiService {
             .name(patient.getName())
             .gender(patient.getGender().name())
             .hasDisease(patient.isHasDisease())
-            .birthday(patient.getBirthday().toString())
+            .age(convertBirthdayToAge(patient.getBirthday()))
             .imageUrl(url)
             .build();
+    }
+
+    private int convertBirthdayToAge(LocalDate birthday) {
+        LocalDate now = LocalDate.now();
+        int nowYear = now.getYear();
+        int birthYear = birthday.getYear();
+        return (nowYear - birthYear) + 1;
     }
 
     @Override
