@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,7 @@ public class PatientController {
             content = @Content(schema = @Schema(implementation = Long.class)))
     })
     @PostMapping("/patients")
-    public ResponseEntity<Object> save(
+    public ResponseEntity<Object> savePatient(
         @Valid @RequestBody PatientSaveRequestDto requestDto
     ) throws BusinessException {
         Long responseDto = patientApiService.savePatient(requestDto);
@@ -55,7 +57,7 @@ public class PatientController {
     })
     @PostMapping(value = "/patients/{patientId}/images",
         consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> transmitResultReportToPacs(
+    public ResponseEntity<Object> savePatientImage(
         @PathVariable(value = "patientId") String patientId,
         @RequestParam(value = "image") MultipartFile image
     ) throws BusinessException {
@@ -66,6 +68,23 @@ public class PatientController {
             .message(HttpStatus.CREATED.toString())
             .response(responseDto)
             .buildAndMapToResponseEntity();
+    }
+
+    @Operation(summary = "환자 이미지 조회", description = "저장된 환자 이미지를 반환합니다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = Resource.class)))
+    })
+    @GetMapping(value = "/patients/{patientId}/images")
+    public ResponseEntity<Resource> getPatientImage(
+        @PathVariable(value = "patientId") String patientId
+    ) {
+        Resource image = patientApiService.getImage(patientId);
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+            .body(image);
     }
 
 }

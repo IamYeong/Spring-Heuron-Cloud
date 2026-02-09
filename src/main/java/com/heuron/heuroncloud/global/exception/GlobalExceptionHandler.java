@@ -259,6 +259,7 @@ public class GlobalExceptionHandler {
 
         log.error(exception + url);
         log.error(exception + message);
+        e.printStackTrace();
 
         return HttpResponseBody.builder()
             .code(httpStatus)
