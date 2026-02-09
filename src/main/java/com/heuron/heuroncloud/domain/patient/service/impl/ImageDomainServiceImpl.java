@@ -83,17 +83,9 @@ public class ImageDomainServiceImpl implements ImageDomainService {
 
         try {
             Files.walk(fullPath)
+                .filter(path -> !path.equals(fullPath)) // 🔥 자기 자신 제외
                 .sorted(Comparator.reverseOrder())
                 .forEach(this::deleteImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to delete existing image", e);
-        }
-    }
-
-    private void deleteImage(Path path) {
-        try {
-            Files.deleteIfExists(path);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to delete existing image", e);
@@ -142,6 +134,26 @@ public class ImageDomainServiceImpl implements ImageDomainService {
     @Override
     @Transactional
     public void deleteImages(Patient patient) {
+        Path fullPath = Paths.get(imageBasePath)
+            .resolve(Long.toString(patient.getId()))
+            .normalize();
 
+        try {
+            Files.walk(fullPath)
+                .sorted(Comparator.reverseOrder())
+                .forEach(this::deleteImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete existing image", e);
+        }
+    }
+
+    private void deleteImage(Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete existing image", e);
+        }
     }
 }
