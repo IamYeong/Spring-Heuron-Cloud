@@ -66,8 +66,28 @@ public class PatientController {
         List<PatientResponseDto> responseDto = patientApiService.getPatients();
 
         return HttpResponseBody.builder()
-            .code(HttpStatus.CREATED)
-            .message(HttpStatus.CREATED.toString())
+            .code(HttpStatus.OK)
+            .message(HttpStatus.OK.toString())
+            .response(responseDto)
+            .buildAndMapToResponseEntity();
+    }
+
+    @Operation(summary = "환자 삭제", description = "환자정보와 이미지를 모두 삭제합니다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "삭제 성공",
+            content = @Content(
+                schema = @Schema(implementation = Boolean.class))
+        )
+    })
+    @DeleteMapping("/patients/{patientId}")
+    public ResponseEntity<Object> deletePatient(
+        @PathVariable(value = "patientId") String patientId
+    ) throws BusinessException {
+        Boolean responseDto = patientApiService.deletePatient(patientId);
+
+        return HttpResponseBody.builder()
+            .code(HttpStatus.OK)
+            .message(HttpStatus.OK.toString())
             .response(responseDto)
             .buildAndMapToResponseEntity();
     }

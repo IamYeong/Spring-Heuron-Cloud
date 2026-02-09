@@ -8,6 +8,10 @@ public interface PatientDomainService {
 
     Patient savePatient(Patient patient);
 
+    Patient getPatient(Long patientId);
+
     List<Patient> getPatients();
+
+    void deletePatient(Patient patient);
 
 }

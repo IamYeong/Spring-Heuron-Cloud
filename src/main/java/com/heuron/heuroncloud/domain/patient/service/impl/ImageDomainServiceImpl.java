@@ -1,9 +1,9 @@
-package com.heuron.heuroncloud.domain.patient.service.image.impl;
+package com.heuron.heuroncloud.domain.patient.service.impl;
 
 import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.repository.PatientRepository;
-import com.heuron.heuroncloud.domain.patient.service.image.ImageDomainService;
+import com.heuron.heuroncloud.domain.patient.service.ImageDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -33,6 +33,8 @@ public class ImageDomainServiceImpl implements ImageDomainService {
     @Value("${image.path}")
     private String imageBasePath;
 
+    private final String JPEG = ".jpeg";
+
     @Override
     @Transactional
     public void saveImage(Long patientId, MultipartFile image) {
@@ -45,11 +47,9 @@ public class ImageDomainServiceImpl implements ImageDomainService {
 
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        String extension = ".jpeg";
-        validateImageExtension(extension);
         deleteExistingImageIfExists(patient);
         String imageId = UUID.randomUUID().toString();
-        String fileName = imageId + extension;
+        String fileName = imageId + JPEG;
 
         patient.setImageId(imageId);
 
@@ -83,26 +83,12 @@ public class ImageDomainServiceImpl implements ImageDomainService {
 
         try {
             Files.walk(fullPath)
+                .filter(path -> !path.equals(fullPath)) // 🔥 자기 자신 제외
                 .sorted(Comparator.reverseOrder())
                 .forEach(this::deleteImage);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to delete existing image", e);
-        }
-    }
-
-    private void deleteImage(Path path) {
-        try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to delete existing image", e);
-        }
-    }
-
-    private void validateImageExtension(String ext) {
-        if (!List.of(".jpg", ".jpeg").contains(ext)) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Unsupported image type");
         }
     }
 
@@ -121,7 +107,7 @@ public class ImageDomainServiceImpl implements ImageDomainService {
         Path imagePath = Paths.get(imageBasePath)
             .resolve(Long.toString(patientId))
             .resolve(today)
-            .resolve(patient.getImageId().concat(".jpeg"))
+            .resolve(patient.getImageId().concat(JPEG))
             .normalize();
 
         System.out.println(patient.getId());
@@ -142,6 +128,32 @@ public class ImageDomainServiceImpl implements ImageDomainService {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Failed to load image file"
             );
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteImages(Patient patient) {
+        Path fullPath = Paths.get(imageBasePath)
+            .resolve(Long.toString(patient.getId()))
+            .normalize();
+
+        try {
+            Files.walk(fullPath)
+                .sorted(Comparator.reverseOrder())
+                .forEach(this::deleteImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete existing image", e);
+        }
+    }
+
+    private void deleteImage(Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete existing image", e);
         }
     }
 }
