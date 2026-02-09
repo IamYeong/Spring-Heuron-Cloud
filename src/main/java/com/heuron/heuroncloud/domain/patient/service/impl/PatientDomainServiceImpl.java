@@ -28,4 +28,10 @@ class PatientDomainServiceImpl implements PatientDomainService {
             .stream().filter(p -> p.getImageId() != null)
             .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public void deletePatient(Patient patient) {
+        patientRepository.delete(patient);
+    }
 }

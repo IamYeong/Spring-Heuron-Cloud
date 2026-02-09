@@ -10,4 +10,6 @@ public interface PatientDomainService {
 
     List<Patient> getPatients();
 
+    void deletePatient(Patient patient);
+
 }
