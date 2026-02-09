@@ -13,6 +13,8 @@ public interface PatientApiService {
 
     List<PatientResponseDto> getPatients();
 
+    Boolean deletePatient(String patientId);
+
     Boolean saveImage(String patientId, MultipartFile image);
 
     Resource getImage(String patientId);

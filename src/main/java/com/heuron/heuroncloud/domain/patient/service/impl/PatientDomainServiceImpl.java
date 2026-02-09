@@ -1,9 +1,11 @@
 package com.heuron.heuroncloud.domain.patient.service.impl;
 
+import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.repository.PatientRepository;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -20,6 +22,12 @@ class PatientDomainServiceImpl implements PatientDomainService {
     @Transactional
     public Patient savePatient(Patient patient) {
         return patientRepository.save(patient);
+    }
+
+    @Override
+    public Patient getPatient(Long patientId) {
+        return patientRepository.findById(patientId)
+            .orElseThrow(() -> new BusinessException(HttpStatus.NO_CONTENT.value(), "Patient Not Found"));
     }
 
     @Override

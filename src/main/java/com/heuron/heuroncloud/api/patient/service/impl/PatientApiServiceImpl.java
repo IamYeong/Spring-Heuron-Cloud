@@ -58,6 +58,22 @@ class PatientApiServiceImpl implements PatientApiService {
 
     @Override
     @Transactional
+    public Boolean deletePatient(String patientId) {
+        Patient patient = patientDomainService.getPatient(Long.parseLong(patientId));
+
+        try {
+            imageDomainService.deleteImages(patient);
+            patientDomainService.deletePatient(patient);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    @Transactional
     public Boolean saveImage(String patientId, MultipartFile image) {
         imageDomainService.saveImage(Long.parseLong(patientId), image);
         return true;
