@@ -1,5 +1,6 @@
 package com.heuron.heuroncloud.domain.patient;
 
+import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import com.heuron.heuroncloud.domain.patient.entity.Gender;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
@@ -42,6 +43,19 @@ public class PatientDomainServiceTest {
 
         // Assert
         Assertions.assertEquals(0, patientList.size());
+    }
+
+    @Test
+    public void deletePatientTest() throws Exception {
+        // Arrange
+        Patient savedPatient = patientDomainService.savePatient(buildPatient());
+
+        // Action
+        patientDomainService.deletePatient(savedPatient);
+
+        // Assert
+        Assertions.assertThrows(BusinessException.class,
+            () -> patientDomainService.getPatient(savedPatient.getId()));
     }
 
     private Patient buildPatient() {
