@@ -33,6 +33,9 @@ public class ImageDomainServiceImpl implements ImageDomainService {
     @Value("${image.path}")
     private String imageBasePath;
 
+    @Value("${image.url}")
+    private String imageUrl;
+
     private final String JPEG = ".jpeg";
 
     @Override
@@ -110,11 +113,6 @@ public class ImageDomainServiceImpl implements ImageDomainService {
             .resolve(patient.getImageId().concat(JPEG))
             .normalize();
 
-        System.out.println(patient.getId());
-        System.out.println(today);
-        System.out.println(patient.getImageId());
-        System.out.println(imagePath.toString());
-
         if (!Files.exists(imagePath)) {
             throw new BusinessException(
                 HttpStatus.NOT_FOUND.value(), "Image file not found"
@@ -129,6 +127,11 @@ public class ImageDomainServiceImpl implements ImageDomainService {
                 "Failed to load image file"
             );
         }
+    }
+
+    @Override
+    public String getUrl(Patient patient) {
+        return "http://" + imageUrl + "/api/patients/" + patient.getId() + "/images";
     }
 
     @Override
