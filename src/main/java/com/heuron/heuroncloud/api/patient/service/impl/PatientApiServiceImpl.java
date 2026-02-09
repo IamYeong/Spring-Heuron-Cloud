@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,9 +24,6 @@ class PatientApiServiceImpl implements PatientApiService {
     private final PatientDomainService patientDomainService;
 
     private final ImageDomainService imageDomainService;
-
-    @Value("${image.url}")
-    private String imageUrl;
 
     @Override
     @Transactional
@@ -44,16 +42,21 @@ class PatientApiServiceImpl implements PatientApiService {
     private PatientResponseDto convertToDto(Patient patient) {
         String patientId = Long.toString(patient.getId());
 
-        String url = "http://" + imageUrl + "/api/patients/" + patientId + "/images";
-
         return PatientResponseDto.builder()
             .id(patientId)
             .name(patient.getName())
             .gender(patient.getGender().name())
             .hasDisease(patient.isHasDisease())
-            .birthday(patient.getBirthday().toString())
-            .imageUrl(url)
+            .age(convertBirthdayToAge(patient.getBirthday()))
+            .imageUrl(imageDomainService.getUrl(patient))
             .build();
+    }
+
+    private int convertBirthdayToAge(LocalDate birthday) {
+        LocalDate now = LocalDate.now();
+        int nowYear = now.getYear();
+        int birthYear = birthday.getYear();
+        return (nowYear - birthYear) + 1;
     }
 
     @Override

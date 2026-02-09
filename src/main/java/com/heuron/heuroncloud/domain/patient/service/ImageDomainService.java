@@ -10,6 +10,8 @@ public interface ImageDomainService {
 
     Resource getImage(Long patientId);
 
+    String getUrl(Patient patient);
+
     void deleteImages(Patient patient);
 
 }
