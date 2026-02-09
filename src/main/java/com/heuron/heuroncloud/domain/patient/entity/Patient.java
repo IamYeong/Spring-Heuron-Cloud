@@ -32,10 +32,16 @@ public class Patient {
 
     private boolean hasDisease;
 
+    private String imageId;
+
     @CreatedDate
     protected LocalDateTime createdDate;
 
     @LastModifiedDate
     protected LocalDateTime updatedDate;
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
 
 }

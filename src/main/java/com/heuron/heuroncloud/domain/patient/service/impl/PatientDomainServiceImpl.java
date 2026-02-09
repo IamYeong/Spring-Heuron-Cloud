@@ -6,6 +6,7 @@ import com.heuron.heuroncloud.domain.patient.repository.PatientRepository;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,27 +44,54 @@ class PatientDomainServiceImpl implements PatientDomainService {
     }
 
     @Override
+    @Transactional
     public void saveImage(Long patientId, MultipartFile image) {
         if (image == null || image.isEmpty()) {
             throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Empty Image");
         }
 
-        patientRepository.findById(patientId)
+        Patient patient = patientRepository.findById(patientId)
             .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST.value(), "Patient not found"));
+        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
         String extension = extractExtension(image.getOriginalFilename());
         validateImageExtension(extension);
+        deleteExistingImageIfExists(patient);
+        String fileName = UUID.randomUUID() + extension;
 
-        String fileName = "patient_" + patientId + "_" + UUID.randomUUID() + extension;
+        patient.setImageId(fileName);
 
         Path baseDir = Paths.get(imageBasePath).toAbsolutePath().normalize();
-        Path targetPath = baseDir.resolve(fileName);
+        Path targetPath = baseDir
+            .resolve(Long.toString(patientId))
+            .resolve(today)
+            .toAbsolutePath()
+            .normalize();
 
         try {
-            Files.createDirectories(baseDir);
-            image.transferTo(targetPath.toFile());
+            Files.createDirectories(targetPath);
+            Path targetFilePath = targetPath.resolve(fileName);
+            image.transferTo(targetFilePath.toFile());
         } catch (IOException e) {
             throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to save image file");
+        }
+    }
+
+    private void deleteExistingImageIfExists(Patient patient) {
+        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        String imageName = Long.toString(patient.getId()).concat("/")
+            .concat(today);
+
+        Path fullPath = Paths.get(imageBasePath)
+            .resolve(Long.toString(patient.getId()))
+            .resolve(today)
+            .resolve(imageName)
+            .normalize();
+
+        try {
+            Files.deleteIfExists(fullPath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete existing image", e);
         }
     }
 
@@ -76,5 +106,19 @@ class PatientDomainServiceImpl implements PatientDomainService {
         if (!List.of(".jpg", ".jpeg").contains(ext)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Unsupported image type");
         }
+    }
+
+    @Override
+    public Resource getImage(Long patientId) {
+        checkExistsPatient(patientId);
+        LocalDate today = LocalDate.now();
+
+
+        return null;
+    }
+
+    private void checkExistsPatient(Long patientId) {
+        patientRepository.findById(patientId)
+            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST.value(), "Patient not found"));
     }
 }
