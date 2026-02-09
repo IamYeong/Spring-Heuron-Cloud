@@ -11,8 +11,4 @@ public interface PatientDomainService {
 
     Patient getPatient(Long id);
 
-    void saveImage(Long patientId, MultipartFile image);
-
-    Resource getImage(Long patientId);
-
 }

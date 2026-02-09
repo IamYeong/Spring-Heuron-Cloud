@@ -4,6 +4,7 @@ import com.heuron.heuroncloud.api.patient.dto.PatientSaveRequestDto;
 import com.heuron.heuroncloud.api.patient.service.PatientApiService;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
+import com.heuron.heuroncloud.domain.patient.service.image.ImageDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ class PatientApiServiceImpl implements PatientApiService {
 
     private final PatientDomainService patientDomainService;
 
+    private final ImageDomainService imageDomainService;
+
     @Override
     @Transactional
     public Long savePatient(PatientSaveRequestDto dto) {
@@ -27,12 +30,12 @@ class PatientApiServiceImpl implements PatientApiService {
     @Override
     @Transactional
     public Boolean saveImage(String patientId, MultipartFile image) {
-        patientDomainService.saveImage(Long.parseLong(patientId), image);
+        imageDomainService.saveImage(Long.parseLong(patientId), image);
         return true;
     }
 
     @Override
     public Resource getImage(String patientId) {
-        return patientDomainService.getImage(Long.parseLong(patientId));
+        return imageDomainService.getImage(Long.parseLong(patientId));
     }
 }
