@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,18 +80,31 @@ class PatientDomainServiceImpl implements PatientDomainService {
 
     private void deleteExistingImageIfExists(Patient patient) {
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-        String imageName = Long.toString(patient.getId()).concat("/")
-            .concat(today);
 
         Path fullPath = Paths.get(imageBasePath)
             .resolve(Long.toString(patient.getId()))
             .resolve(today)
-            .resolve(imageName)
             .normalize();
 
+        if (!Files.exists(fullPath)) {
+            return;
+        }
+
         try {
-            Files.deleteIfExists(fullPath);
+            Files.walk(fullPath)
+                .sorted(Comparator.reverseOrder())
+                .forEach(this::deleteImage);
         } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete existing image", e);
+        }
+    }
+
+    private void deleteImage(Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to delete existing image", e);
         }
     }
