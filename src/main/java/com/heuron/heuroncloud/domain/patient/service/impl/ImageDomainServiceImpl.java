@@ -33,6 +33,8 @@ public class ImageDomainServiceImpl implements ImageDomainService {
     @Value("${image.path}")
     private String imageBasePath;
 
+    private final String JPEG = ".jpeg";
+
     @Override
     @Transactional
     public void saveImage(Long patientId, MultipartFile image) {
@@ -45,11 +47,9 @@ public class ImageDomainServiceImpl implements ImageDomainService {
 
         String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        String extension = ".jpeg";
-        validateImageExtension(extension);
         deleteExistingImageIfExists(patient);
         String imageId = UUID.randomUUID().toString();
-        String fileName = imageId + extension;
+        String fileName = imageId + JPEG;
 
         patient.setImageId(imageId);
 
@@ -100,12 +100,6 @@ public class ImageDomainServiceImpl implements ImageDomainService {
         }
     }
 
-    private void validateImageExtension(String ext) {
-        if (!List.of(".jpg", ".jpeg").contains(ext)) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST.value(), "Unsupported image type");
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
     public Resource getImage(Long patientId) {
@@ -121,7 +115,7 @@ public class ImageDomainServiceImpl implements ImageDomainService {
         Path imagePath = Paths.get(imageBasePath)
             .resolve(Long.toString(patientId))
             .resolve(today)
-            .resolve(patient.getImageId().concat(".jpeg"))
+            .resolve(patient.getImageId().concat(JPEG))
             .normalize();
 
         System.out.println(patient.getId());
@@ -143,5 +137,11 @@ public class ImageDomainServiceImpl implements ImageDomainService {
                 "Failed to load image file"
             );
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteImages(Patient patient) {
+
     }
 }
