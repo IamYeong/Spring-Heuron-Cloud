@@ -1,4 +1,4 @@
-package com.heuron.heuroncloud.domain.patient.service.image;
+package com.heuron.heuroncloud.domain.patient.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;

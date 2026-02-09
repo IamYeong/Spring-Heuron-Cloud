@@ -5,7 +5,7 @@ import com.heuron.heuroncloud.api.patient.dto.PatientSaveRequestDto;
 import com.heuron.heuroncloud.api.patient.service.PatientApiService;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.service.PatientDomainService;
-import com.heuron.heuroncloud.domain.patient.service.image.ImageDomainService;
+import com.heuron.heuroncloud.domain.patient.service.ImageDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service

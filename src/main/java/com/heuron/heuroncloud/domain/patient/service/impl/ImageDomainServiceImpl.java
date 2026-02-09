@@ -1,9 +1,9 @@
-package com.heuron.heuroncloud.domain.patient.service.image.impl;
+package com.heuron.heuroncloud.domain.patient.service.impl;
 
 import com.heuron.heuroncloud.domain.common.exception.BusinessException;
 import com.heuron.heuroncloud.domain.patient.entity.Patient;
 import com.heuron.heuroncloud.domain.patient.repository.PatientRepository;
-import com.heuron.heuroncloud.domain.patient.service.image.ImageDomainService;
+import com.heuron.heuroncloud.domain.patient.service.ImageDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
