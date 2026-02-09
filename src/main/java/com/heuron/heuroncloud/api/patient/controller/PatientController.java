@@ -1,10 +1,12 @@
 package com.heuron.heuroncloud.api.patient.controller;
 
 import com.heuron.heuroncloud.api.common.dto.HttpResponseBody;
+import com.heuron.heuroncloud.api.patient.dto.PatientResponseDto;
 import com.heuron.heuroncloud.api.patient.dto.PatientSaveRequestDto;
 import com.heuron.heuroncloud.api.patient.service.PatientApiService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -42,6 +45,25 @@ public class PatientController {
         @Valid @RequestBody PatientSaveRequestDto requestDto
     ) throws BusinessException {
         Long responseDto = patientApiService.savePatient(requestDto);
+
+        return HttpResponseBody.builder()
+            .code(HttpStatus.CREATED)
+            .message(HttpStatus.CREATED.toString())
+            .response(responseDto)
+            .buildAndMapToResponseEntity();
+    }
+
+    @Operation(summary = "환자목록 조회", description = "이미지까지 저장된 환자의 기본정보와 url 목록을 가져옵니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(
+                array = @ArraySchema(
+                    schema = @Schema(implementation = PatientResponseDto.class)))
+                )
+    })
+    @GetMapping("/patients")
+    public ResponseEntity<Object> getPatients() throws BusinessException {
+        List<PatientResponseDto> responseDto = patientApiService.getPatients();
 
         return HttpResponseBody.builder()
             .code(HttpStatus.CREATED)

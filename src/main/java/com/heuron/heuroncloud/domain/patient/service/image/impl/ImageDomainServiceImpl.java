@@ -33,9 +33,6 @@ public class ImageDomainServiceImpl implements ImageDomainService {
     @Value("${image.path}")
     private String imageBasePath;
 
-    @Value("${image.url}")
-    private String imageUrl;
-
     @Override
     @Transactional
     public void saveImage(Long patientId, MultipartFile image) {
